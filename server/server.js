@@ -9,7 +9,7 @@ const adminProductsRouter = require('./routes/admin/products-routes')
 // create a database connection
 
 mongoose.connect(
-    "mongodb+srv://testdb:Testdb@cluster0.q3a8e.mongodb.net/"//MongoDB URL
+    ""//MongoDB URL
 ).then(() => console.log('MongoDB Connected'))
  .catch(error => console.log('Connection error:', error));
 
