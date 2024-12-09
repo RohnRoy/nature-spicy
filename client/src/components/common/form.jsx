@@ -1,10 +1,23 @@
-import { Label } from "@radix-ui/react-label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import { Textarea } from "../ui/textarea";
 import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 
-function CommonForm({ formControls, formData, setFormData, onSubmit, buttonText }) {
+function CommonForm({
+  formControls,
+  formData,
+  setFormData,
+  onSubmit,
+  buttonText,
+  isBtnDisabled,
+}) {
   function renderInputsByComponentType(getControlItem) {
     let element = null;
     const value = formData[getControlItem.name] || "";
@@ -26,17 +39,18 @@ function CommonForm({ formControls, formData, setFormData, onSubmit, buttonText 
             }
           />
         );
+
         break;
       case "select":
         element = (
           <Select
-            value={value}
-            onValueChange={(newValue) =>
+            onValueChange={(value) =>
               setFormData({
                 ...formData,
-                [getControlItem.name]: newValue,
+                [getControlItem.name]: value,
               })
             }
+            value={value}
           >
             <SelectTrigger className="w-full">
               <SelectValue placeholder={getControlItem.label} />
@@ -52,6 +66,7 @@ function CommonForm({ formControls, formData, setFormData, onSubmit, buttonText 
             </SelectContent>
           </Select>
         );
+
         break;
       case "textarea":
         element = (
@@ -68,7 +83,9 @@ function CommonForm({ formControls, formData, setFormData, onSubmit, buttonText 
             }
           />
         );
+
         break;
+
       default:
         element = (
           <Input
@@ -87,6 +104,7 @@ function CommonForm({ formControls, formData, setFormData, onSubmit, buttonText 
         );
         break;
     }
+
     return element;
   }
 
@@ -100,7 +118,7 @@ function CommonForm({ formControls, formData, setFormData, onSubmit, buttonText 
           </div>
         ))}
       </div>
-      <Button type="submit" className="mt-2 w-full">
+      <Button disabled={isBtnDisabled} type="submit" className="mt-2 w-full">
         {buttonText || "Submit"}
       </Button>
     </form>

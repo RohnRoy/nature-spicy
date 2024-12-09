@@ -1,10 +1,5 @@
-
-
-
 function AdminFeatures() {
-    return <div>Admin Features</div>
-
-    
+  return <div>admin features</div>;
 }
 
 export default AdminFeatures;
