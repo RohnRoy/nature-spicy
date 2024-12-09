@@ -161,7 +161,7 @@ export const filterOptions = {
     { id: "specials", label: "Idukki Specials" },
     { id: "powders", label: "Masala Powders" },
   ],
-  Brand: [
+  brand: [
     { id: "naturespicy", label: "Nature Spicy Originals" },
  
   ],
