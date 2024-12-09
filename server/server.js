@@ -1,4 +1,4 @@
-require('dotenv').config();
+require("dotenv").config();
 
 const express = require("express");
 const mongoose = require("mongoose");
@@ -17,8 +17,7 @@ const shopReviewRouter = require("./routes/shop/review-routes");
 
 const commonFeatureRouter = require("./routes/common/feature-routes");
 
-//create a database connection 
-
+//create a database connection
 
 mongoose
   .connect(process.env.MONGO_URL)
