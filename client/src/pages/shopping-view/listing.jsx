@@ -1,3 +1,4 @@
+import logo from "../../assets/logo.webp";
 import ProductFilter from "@/components/shopping-view/filter";
 import ProductDetailsDialog from "@/components/shopping-view/product-details";
 import ShoppingProductTile from "@/components/shopping-view/product-tile";
@@ -16,7 +17,15 @@ import {
   fetchAllFilteredProducts,
   fetchProductDetails,
 } from "@/store/shop/products-slice";
-import { ArrowUpDownIcon } from "lucide-react";
+import { Label } from "@radix-ui/react-dropdown-menu";
+import {
+  ArrowUpDownIcon,
+  Facebook,
+  Instagram,
+  Mail,
+  Phone,
+  Twitter,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
@@ -79,12 +88,10 @@ function ShoppingListing() {
   }
 
   function handleGetProductDetails(getCurrentProductId) {
-    console.log(getCurrentProductId);
     dispatch(fetchProductDetails(getCurrentProductId));
   }
 
   function handleAddtoCart(getCurrentProductId, getTotalStock) {
-    console.log(cartItems);
     let getCartItems = cartItems.items || [];
 
     if (getCartItems.length) {
@@ -143,61 +150,170 @@ function ShoppingListing() {
     if (productDetails !== null) setOpenDetailsDialog(true);
   }, [productDetails]);
 
-  // console.log(productList, "productListproductListproductList");
-
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6">
-      <ProductFilter filters={filters} handleFilter={handleFilter} />
-      <div className="bg-background w-full rounded-lg shadow-sm">
-        <div className="p-4 border-b flex items-center justify-between">
-          <h2 className="text-lg font-extrabold">All Products</h2>
-          <div className="flex items-center gap-3">
-            <span className="text-muted-foreground">
-              {productList?.length} Products
-            </span>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex items-center gap-1"
-                >
-                  <ArrowUpDownIcon className="h-4 w-4" />
-                  <span>Sort by</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-[200px]">
-                <DropdownMenuRadioGroup value={sort} onValueChange={handleSort}>
-                  {sortOptions.map((sortItem) => (
-                    <DropdownMenuRadioItem
-                      value={sortItem.id}
-                      key={sortItem.id}
-                    >
-                      {sortItem.label}
-                    </DropdownMenuRadioItem>
-                  ))}
-                </DropdownMenuRadioGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
+    <div>
+      {/* Grid for Filters and Product Listing */}
+      <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6">
+        <ProductFilter filters={filters} handleFilter={handleFilter} />
+        <div className="bg-background w-full rounded-lg shadow-sm">
+          <div className="p-4 border-b flex items-center justify-between">
+            <h2 className="text-lg font-extrabold">All Products</h2>
+            <div className="flex items-center gap-3">
+              <span className="text-muted-foreground">
+                {productList?.length} Products
+              </span>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-1"
+                  >
+                    <ArrowUpDownIcon className="h-4 w-4" />
+                    <span>Sort by</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-[200px]">
+                  <DropdownMenuRadioGroup
+                    value={sort}
+                    onValueChange={handleSort}
+                  >
+                    {sortOptions.map((sortItem) => (
+                      <DropdownMenuRadioItem
+                        value={sortItem.id}
+                        key={sortItem.id}
+                      >
+                        {sortItem.label}
+                      </DropdownMenuRadioItem>
+                    ))}
+                  </DropdownMenuRadioGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+            {productList && productList.length > 0
+              ? productList.map((productItem) => (
+                  <ShoppingProductTile
+                    handleGetProductDetails={handleGetProductDetails}
+                    product={productItem}
+                    handleAddtoCart={handleAddtoCart}
+                  />
+                ))
+              : null}
           </div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
-          {productList && productList.length > 0
-            ? productList.map((productItem) => (
-                <ShoppingProductTile
-                  handleGetProductDetails={handleGetProductDetails}
-                  product={productItem}
-                  handleAddtoCart={handleAddtoCart}
-                />
-              ))
-            : null}
+        <ProductDetailsDialog
+          open={openDetailsDialog}
+          setOpen={setOpenDetailsDialog}
+          productDetails={productDetails}
+        />
+      </div>
+
+       {/* Footer Section */}
+<footer className="bg-gray-800 text-white py-8">
+  <div className="container mx-auto flex flex-col md:flex-row justify-between items-start">
+    {/* Logo Section */}
+    <div className="flex flex-col items-start mb-6 md:mb-0">
+      <div className="flex items-center">
+        <img src={logo} alt="Logo" className="h-20 w-auto mr-2" />
+        
+      </div>
+    </div>
+
+    {/* Navigation Links */}
+    <div className="mb-6 md:mb-0">
+      <nav className="space-y-2">
+        <Label
+          onClick={() => navigate("/shop/home")}
+          className="block cursor-pointer hover:text-gray-300"
+        >
+          Home
+        </Label>
+        <Label
+          onClick={() => navigate("/shop/listing")}
+          className="block cursor-pointer hover:text-gray-300"
+        >
+          Products
+        </Label>
+        <Label
+          onClick={() => navigate("/about")}
+          className="block cursor-pointer hover:text-gray-300"
+        >
+          About Us
+        </Label>
+        <Label
+          onClick={() => navigate("/contact")}
+          className="block cursor-pointer hover:text-gray-300"
+        >
+          Contact
+        </Label>
+        <Label
+          onClick={() => navigate("/faq")}
+          className="block cursor-pointer hover:text-gray-300"
+        >
+          FAQ
+        </Label>
+      </nav>
+    </div>
+
+    {/* Contact and Social Media */}
+    <div className="flex flex-col items-start md:items-end">
+      <div className="space-y-2">
+        <div className="flex items-center space-x-2">
+          <Mail className="h-5 w-5" />
+          <span>info@naturespicy.com</span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <Phone className="h-5 w-5" />
+          <span>+91 9876543210</span>
         </div>
       </div>
-      <ProductDetailsDialog
-        open={openDetailsDialog}
-        setOpen={setOpenDetailsDialog}
-        productDetails={productDetails}
-      />
+
+      <div className="flex space-x-4 mt-4">
+        <Button
+          as="a"
+          href="https://facebook.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          variant="ghost"
+          size="icon"
+          className="hover:text-gray-300"
+        >
+          <Facebook className="h-6 w-6" />
+        </Button>
+        <Button
+          as="a"
+          href="https://twitter.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          variant="ghost"
+          size="icon"
+          className="hover:text-gray-300"
+        >
+          <Twitter className="h-6 w-6" />
+        </Button>
+        <Button
+          as="a"
+          href="https://instagram.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          variant="ghost"
+          size="icon"
+          className="hover:text-gray-300"
+        >
+          <Instagram className="h-6 w-6" />
+        </Button>
+      </div>
+    </div>
+  </div>
+
+  <div className="text-center mt-6 text-sm">
+    © 2024 Nature Spicy. All rights reserved.
+  </div>
+</footer>
+
+
     </div>
   );
 }

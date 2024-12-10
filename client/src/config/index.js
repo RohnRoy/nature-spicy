@@ -1,4 +1,4 @@
-import { Search } from "lucide-react";
+
 export const registerFormControls = [
   {
     name: "userName",
