@@ -126,7 +126,9 @@ function ShoppingCheckout() {
           </div>
         </div>
       </div>
+      
     </div>
+    
   );
 }
 
