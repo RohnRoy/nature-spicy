@@ -22,6 +22,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import PaypalReturnPage from "./pages/shopping-view/paypal-return";
 import PaymentSuccessPage from "./pages/shopping-view/payment-success";
 import SearchProducts from "./pages/shopping-view/search";
+import ShoppingHeader from "./components/shopping-view/header";
 
 function App() {
   const { user, isAuthenticated, isLoading } = useSelector(
@@ -76,9 +77,16 @@ function App() {
         <Route
           path="/shop"
           element={
-            <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+            <>
+            {/* <ShoppingHeader/> */}
+            <ShoppingLayout/>
+            {/* 
+           
+            {/* <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+            <Route path="checkout" element={<ShoppingCheckout />} />
               <ShoppingLayout />
-            </CheckAuth>
+            </CheckAuth> */}
+            </>
           }
         >
           <Route path="home" element={<ShoppingHome />} />
