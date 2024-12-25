@@ -36,8 +36,14 @@ function SearchProducts() {
     }
   }, [keyword]);
 
-  function handleAddtoCart(getCurrentProductId, getTotalStock) {
-    console.log(cartItems);
+// added price,title,image for anonymous user
+  function handleAddtoCart(
+    getCurrentProductId,
+    getTotalStock,
+    price,
+    title,
+    image
+  ) {
     let getCartItems = cartItems.items || [];
 
     if (getCartItems.length) {
@@ -62,6 +68,9 @@ function SearchProducts() {
         userId: user?.id,
         productId: getCurrentProductId,
         quantity: 1,
+        price,
+        title,
+        image,
       })
     ).then((data) => {
       if (data?.payload?.success) {
@@ -106,6 +115,7 @@ function SearchProducts() {
             handleAddtoCart={handleAddtoCart}
             product={item}
             handleGetProductDetails={handleGetProductDetails}
+            key={item._id}
           />
         ))}
       </div>
@@ -114,7 +124,6 @@ function SearchProducts() {
         setOpen={setOpenDetailsDialog}
         productDetails={productDetails}
       />
-      
     </div>
   );
 }

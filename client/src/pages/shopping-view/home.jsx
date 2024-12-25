@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import logo from "../../assets/logo.webp"
+import logo from "../../assets/logo.webp";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -68,12 +68,16 @@ function ShoppingHome() {
     dispatch(fetchProductDetails(getCurrentProductId));
   }
 
-  function handleAddtoCart(getCurrentProductId) {
+// added price,title,image for anonymous user
+  function handleAddtoCart(getCurrentProductId, _, price, title, image) {
     dispatch(
       addToCart({
         userId: user?.id,
         productId: getCurrentProductId,
         quantity: 1,
+        price,
+        title,
+        image,
       })
     ).then((data) => {
       if (data?.payload?.success) {
@@ -154,29 +158,34 @@ function ShoppingHome() {
         </Button>
       </div>
       <section className="py-12 bg-gray-50">
-  <div className="container mx-auto px-4">
-    <h2 className="text-3xl font-bold text-center mb-8">Shop by Category</h2>
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-      {categoriesWithIcon.map((categoryItem) => (
-        <Card
-          key={categoryItem.id}
-          onClick={() => handleNavigateToListingPage(categoryItem, "category")}
-          className="cursor-pointer hover:shadow-lg transition-shadow"
-        >
-          <CardContent className="flex flex-col items-center justify-center p-8 h-[200px]">
-            <img
-              src={categoryItem.icon}
-              alt={`${categoryItem.label} Icon`}
-              className="w-20 h-20 rounded-full mb-4 object-cover"
-            />
-            <span className="font-bold text-lg">{categoryItem.label}</span>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  </div>
-</section>
-
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-8">
+            Shop by Category
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+            {categoriesWithIcon.map((categoryItem) => (
+              <Card
+                key={categoryItem.id}
+                onClick={() =>
+                  handleNavigateToListingPage(categoryItem, "category")
+                }
+                className="cursor-pointer hover:shadow-lg transition-shadow"
+              >
+                <CardContent className="flex flex-col items-center justify-center p-8 h-[200px]">
+                  <img
+                    src={categoryItem.icon}
+                    alt={`${categoryItem.label} Icon`}
+                    className="w-20 h-20 rounded-full mb-4 object-cover"
+                  />
+                  <span className="font-bold text-lg">
+                    {categoryItem.label}
+                  </span>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
 
       <section className="py-12">
         <div className="container mx-auto px-4">
@@ -199,114 +208,109 @@ function ShoppingHome() {
         setOpen={setOpenDetailsDialog}
         productDetails={productDetails}
       />
-     {/* Footer Section */}
-<footer className="bg-gray-800 text-white py-8">
-  <div className="container mx-auto flex flex-col md:flex-row justify-between items-start">
-    {/* Logo Section */}
-    <div className="flex flex-col items-start mb-6 md:mb-0">
-      <div className="flex items-center">
-        <img src={logo} alt="Logo" className="h-20 w-auto mr-2" />
-        
-      </div>
-    </div>
+      {/* Footer Section */}
+      <footer className="bg-gray-800 text-white py-8">
+        <div className="container mx-auto flex flex-col md:flex-row justify-between items-start">
+          {/* Logo Section */}
+          <div className="flex flex-col items-start mb-6 md:mb-0">
+            <div className="flex items-center">
+              <img src={logo} alt="Logo" className="h-20 w-auto mr-2" />
+            </div>
+          </div>
 
-    {/* Navigation Links */}
-    <div className="mb-6 md:mb-0">
-      <nav className="space-y-2">
-        <Label
-          onClick={() => navigate("/shop/home")}
-          className="block cursor-pointer hover:text-gray-300"
-        >
-          Home
-        </Label>
-        <Label
-          onClick={() => navigate("/shop/listing")}
-          className="block cursor-pointer hover:text-gray-300"
-        >
-          Products
-        </Label>
-        <Label
-          onClick={() => navigate("/about")}
-          className="block cursor-pointer hover:text-gray-300"
-        >
-          About Us
-        </Label>
-        <Label
-          onClick={() => navigate("/contact")}
-          className="block cursor-pointer hover:text-gray-300"
-        >
-          Contact
-        </Label>
-        <Label
-          onClick={() => navigate("/faq")}
-          className="block cursor-pointer hover:text-gray-300"
-        >
-          FAQ
-        </Label>
-      </nav>
-    </div>
+          {/* Navigation Links */}
+          <div className="mb-6 md:mb-0">
+            <nav className="space-y-2">
+              <Label
+                onClick={() => navigate("/shop/home")}
+                className="block cursor-pointer hover:text-gray-300"
+              >
+                Home
+              </Label>
+              <Label
+                onClick={() => navigate("/shop/listing")}
+                className="block cursor-pointer hover:text-gray-300"
+              >
+                Products
+              </Label>
+              <Label
+                onClick={() => navigate("/about")}
+                className="block cursor-pointer hover:text-gray-300"
+              >
+                About Us
+              </Label>
+              <Label
+                onClick={() => navigate("/contact")}
+                className="block cursor-pointer hover:text-gray-300"
+              >
+                Contact
+              </Label>
+              <Label
+                onClick={() => navigate("/faq")}
+                className="block cursor-pointer hover:text-gray-300"
+              >
+                FAQ
+              </Label>
+            </nav>
+          </div>
 
-    {/* Contact and Social Media */}
-    <div className="flex flex-col items-start md:items-end">
-      <div className="space-y-2">
-        <div className="flex items-center space-x-2">
-          <Mail className="h-5 w-5" />
-          <span>info@naturespicy.com</span>
+          {/* Contact and Social Media */}
+          <div className="flex flex-col items-start md:items-end">
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2">
+                <Mail className="h-5 w-5" />
+                <span>info@naturespicy.com</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Phone className="h-5 w-5" />
+                <span>+91 9876543210</span>
+              </div>
+            </div>
+
+            <div className="flex space-x-4 mt-4">
+              <Button
+                as="a"
+                href="https://facebook.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="ghost"
+                size="icon"
+                className="hover:text-gray-300"
+              >
+                <Facebook className="h-6 w-6" />
+              </Button>
+              <Button
+                as="a"
+                href="https://twitter.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="ghost"
+                size="icon"
+                className="hover:text-gray-300"
+              >
+                <Twitter className="h-6 w-6" />
+              </Button>
+              <Button
+                as="a"
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="ghost"
+                size="icon"
+                className="hover:text-gray-300"
+              >
+                <Instagram className="h-6 w-6" />
+              </Button>
+            </div>
+          </div>
         </div>
-        <div className="flex items-center space-x-2">
-          <Phone className="h-5 w-5" />
-          <span>+91 9876543210</span>
+
+        <div className="text-center mt-6 text-sm">
+          © 2024 Nature Spicy. All rights reserved.
         </div>
-      </div>
-
-      <div className="flex space-x-4 mt-4">
-        <Button
-          as="a"
-          href="https://facebook.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          variant="ghost"
-          size="icon"
-          className="hover:text-gray-300"
-        >
-          <Facebook className="h-6 w-6" />
-        </Button>
-        <Button
-          as="a"
-          href="https://twitter.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          variant="ghost"
-          size="icon"
-          className="hover:text-gray-300"
-        >
-          <Twitter className="h-6 w-6" />
-        </Button>
-        <Button
-          as="a"
-          href="https://instagram.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          variant="ghost"
-          size="icon"
-          className="hover:text-gray-300"
-        >
-          <Instagram className="h-6 w-6" />
-        </Button>
-      </div>
-    </div>
-  </div>
-
-  <div className="text-center mt-6 text-sm">
-    © 2024 Nature Spicy. All rights reserved.
-  </div>
-</footer>
-
-
+      </footer>
     </div>
   );
 }
-
-   
 
 export default ShoppingHome;
