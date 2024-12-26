@@ -28,8 +28,14 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
 
     setRating(getRating);
   }
-
-  function handleAddToCart(getCurrentProductId, getTotalStock) {
+// added price,title,image for anonymous user
+  function handleAddToCart(
+    getCurrentProductId,
+    getTotalStock,
+    price,
+    title,
+    image
+  ) {
     let getCartItems = cartItems.items || [];
 
     if (getCartItems.length) {
@@ -53,6 +59,9 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
         userId: user?.id,
         productId: getCurrentProductId,
         quantity: 1,
+        price,
+        title,
+        image,
       })
     ).then((data) => {
       if (data?.payload?.success) {
@@ -156,7 +165,10 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
                 onClick={() =>
                   handleAddToCart(
                     productDetails?._id,
-                    productDetails?.totalStock
+                    productDetails?.totalStock,
+                    productDetails?.salePrice,
+                    productDetails?.title,
+                    productDetails?.image
                   )
                 }
               >
