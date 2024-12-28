@@ -78,9 +78,9 @@ function App() {
           path="/shop"
           element={
             <>
-            {/* <ShoppingHeader/> */}
-            <ShoppingLayout/>
-            {/* 
+              {/* <ShoppingHeader/> */}
+              <ShoppingLayout />
+              {/* 
            
             {/* <CheckAuth isAuthenticated={isAuthenticated} user={user}>
             <Route path="checkout" element={<ShoppingCheckout />} />
@@ -91,10 +91,38 @@ function App() {
         >
           <Route path="home" element={<ShoppingHome />} />
           <Route path="listing" element={<ShoppingListing />} />
-          <Route path="checkout" element={<ShoppingCheckout />} />
-          <Route path="account" element={<ShoppingAccount />} />
-          <Route path="paypal-return" element={<PaypalReturnPage />} />
-          <Route path="payment-success" element={<PaymentSuccessPage />} />
+          <Route
+            path="checkout"
+            element={
+              <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+                <ShoppingCheckout />
+              </CheckAuth>
+            }
+          />
+          <Route
+            path="account"
+            element={
+              <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+                <ShoppingAccount />
+              </CheckAuth>
+            }
+          />
+          <Route
+            path="paypal-return"
+            element={
+              <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+                <PaypalReturnPage />
+              </CheckAuth>
+            }
+          />
+          <Route
+            path="payment-success"
+            element={
+              <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+                <PaymentSuccessPage />
+              </CheckAuth>
+            }
+          />
           <Route path="search" element={<SearchProducts />} />
         </Route>
         <Route path="/unauth-page" element={<UnauthPage />} />
