@@ -41,6 +41,12 @@ function ShoppingCheckout() {
       : 0;
 
   async function handleInitiateRazorpayPayment() {
+    if(!currentSelectedAddress){
+       return toast({
+        title: "Please select an address to proceed",
+        variant:"destructive"
+      });
+    }
     const response = await axios.post("http://localhost:5000/api/shop/order/create", {
       userId: user.id,
       cartId: cartItems._id,
