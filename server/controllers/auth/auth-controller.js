@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../../models/User");
+const Cart = require("../../models/Cart");
 
 //register
 const registerUser = async (req, res) => {
@@ -37,8 +38,8 @@ const registerUser = async (req, res) => {
 
 //login
 const loginUser = async (req, res) => {
-  const { email, password } = req.body;
-
+  const { email, password, cartItems } = req.body;
+  let parsedCartItems = JSON.parse(cartItems);
   try {
     const checkUser = await User.findOne({ email });
     if (!checkUser)
@@ -67,6 +68,29 @@ const loginUser = async (req, res) => {
       "CLIENT_SECRET_KEY",
       { expiresIn: "60m" }
     );
+    // check if there are any items in the cart and add them to the user's cart
+    if (parsedCartItems?.length > 0) {
+      const cart = await Cart.findOne({ userId: checkUser._id });
+      if (cart) {
+        parsedCartItems.forEach((item) => {
+          const itemIndex = cart.items.findIndex(
+            (cartItem) => cartItem.productId?.toString() === item.productId
+          );
+          if (itemIndex > -1) {
+            cart.items[itemIndex].quantity += item.quantity;
+          } else {
+            cart.items.push(item);
+          }
+        });
+        await cart.save();
+      } else {
+        const newCart = new Cart({
+          userId: checkUser._id,
+          items: parsedCartItems,
+        });
+        await newCart.save();
+      }
+    }
 
     res.cookie("token", token, { httpOnly: true, secure: false }).json({
       success: true,
