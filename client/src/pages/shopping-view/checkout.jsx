@@ -13,7 +13,7 @@ function ShoppingCheckout() {
   const { user } = useSelector((state) => state.auth);
   const { approvalURL } = useSelector((state) => state.shopOrder);
   const [currentSelectedAddress, setCurrentSelectedAddress] = useState(null);
-  const [isPaymentStart, setIsPaymemntStart] = useState(false);
+  const [isPaymentStart, setIsPaymentStart] = useState(false);
   const dispatch = useDispatch();
   const { toast } = useToast();
 
@@ -84,9 +84,9 @@ function ShoppingCheckout() {
     dispatch(createNewOrder(orderData)).then((data) => {
       
       if (data?.payload?.success) {
-        setIsPaymemntStart(true);
+        setIsPaymentStart(true);
       } else {
-        setIsPaymemntStart(false);
+        setIsPaymentStart(false);
       }
     });
   }
