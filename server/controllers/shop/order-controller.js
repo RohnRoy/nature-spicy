@@ -3,30 +3,36 @@ const Order = require("../../models/Order");
 const Cart = require("../../models/Cart");
 const Product = require("../../models/Product");
 
-
 const createOrder = async (req, res) => {
   try {
-    const {
-      userId,
-      cartItems,
-      addressInfo,
-      totalAmount,
-      orderStatus,
-      cartId,
-    } = req.body;
+    const { userId, addressInfo, totalAmount, orderStatus, cartId } = req.body;
 
     const options = {
       amount: totalAmount * 100, // Convert to smallest currency unit
       currency: "INR",
       receipt: `receipt_${cartId}`,
     };
+    // find cart items using cartId and populate the product details saved in the order
+    const cart = await Cart.findById(cartId).populate("items.productId");
+
+    if (!cart) {
+      return res.status(404).json({
+        success: false,
+        message: "Cart not found",
+      });
+    }
+    const flattenedCartItems = cart.items.map((item) => ({
+      ...item.productId.toObject(),
+      quantity: item.quantity,
+      _id: item._id,
+    }));
 
     const order = await razorpay.orders.create(options);
 
     const newOrder = new Order({
       userId,
       cartId,
-      cartItems,
+      cartItems: flattenedCartItems,
       addressInfo,
       orderStatus,
       paymentMethod: "razorpay",
@@ -51,10 +57,14 @@ const createOrder = async (req, res) => {
   }
 };
 
-
 const capturePayment = async (req, res) => {
   try {
-    const { razorpay_payment_id, razorpay_order_id, razorpay_signature, orderId } = req.body;
+    const {
+      razorpay_payment_id,
+      razorpay_order_id,
+      razorpay_signature,
+      orderId,
+    } = req.body;
 
     const order = await Order.findById(orderId);
     if (!order) {
@@ -86,6 +96,17 @@ const capturePayment = async (req, res) => {
     order.orderStatus = "confirmed";
     order.paymentId = razorpay_payment_id;
     await order.save();
+    // remove the items from the cart after successful payment
+    const cart = await Cart.findById(order.cartId);
+    if (cart) {
+      cart.items = cart.items.filter(
+        (item) =>
+          !order.cartItems.find(
+            (cartItem) => cartItem._id.toString() === item._id.toString()
+          )
+      );
+      await cart.save();
+    }
 
     res.status(200).json({
       success: true,

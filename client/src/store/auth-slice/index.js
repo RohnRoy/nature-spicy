@@ -27,6 +27,11 @@ export const loginUser = createAsyncThunk(
   "/auth/login",
 
   async (formData) => {
+    // check if there are any items in the cart and add them to the form data for saving to user's cart
+    const cartItems = localStorage.getItem("cartItems");
+    if (cartItems) {
+      formData.cartItems = cartItems;
+    }
     const response = await axios.post(
       "http://localhost:5000/api/auth/login",
       formData,
@@ -100,7 +105,7 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         console.log(action);
-
+        localStorage.removeItem("cartItems");
         state.isLoading = false;
         state.user = action.payload.success ? action.payload.user : null;
         state.isAuthenticated = action.payload.success;
