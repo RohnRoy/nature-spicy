@@ -39,7 +39,7 @@ const registerUser = async (req, res) => {
 //login
 const loginUser = async (req, res) => {
   const { email, password, cartItems } = req.body;
-  let parsedCartItems = JSON.parse(cartItems);
+  let parsedCartItems = cartItems ? JSON.parse(cartItems) : [];
   try {
     const checkUser = await User.findOne({ email });
     if (!checkUser)
