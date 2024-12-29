@@ -3,10 +3,11 @@ import img from "../../assets/banner.webp";
 import { useDispatch, useSelector } from "react-redux";
 import UserCartItemsContent from "@/components/shopping-view/cart-items-content";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createNewOrder } from "@/store/shop/order-slice";
 import { Navigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
+import axios from "axios";
 
 function ShoppingCheckout() {
   const { cartItems } = useSelector((state) => state.shopCart);
@@ -16,6 +17,13 @@ function ShoppingCheckout() {
   const [isPaymentStart, setIsPaymentStart] = useState(false);
   const dispatch = useDispatch();
   const { toast } = useToast();
+
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    document.body.appendChild(script);
+  }, []);
 
   console.log(currentSelectedAddress, "cartItems");
 
@@ -32,67 +40,45 @@ function ShoppingCheckout() {
         )
       : 0;
 
-  function handleInitiatePaypalPayment() {
-    if (cartItems.length === 0) {
-      toast({
-        title: "Your cart is empty. Please add items to proceed",
-        variant: "destructive",
-      });
-
-      return;
-    }
-    if (currentSelectedAddress === null) {
-      toast({
-        title: "Please select one address to proceed.",
-        variant: "destructive",
-      });
-
-      return;
-    }
-
-    const orderData = {
-      userId: user?.id,
-      cartId: cartItems?._id,
-      cartItems: cartItems.items.map((singleCartItem) => ({
-        productId: singleCartItem?.productId,
-        title: singleCartItem?.title,
-        image: singleCartItem?.image,
-        price:
-          singleCartItem?.salePrice > 0
-            ? singleCartItem?.salePrice
-            : singleCartItem?.price,
-        quantity: singleCartItem?.quantity,
-      })),
-      addressInfo: {
-        addressId: currentSelectedAddress?._id,
-        address: currentSelectedAddress?.address,
-        city: currentSelectedAddress?.city,
-        pincode: currentSelectedAddress?.pincode,
-        phone: currentSelectedAddress?.phone,
-        notes: currentSelectedAddress?.notes,
-      },
-      orderStatus: "pending",
-      paymentMethod: "paypal",
-      paymentStatus: "pending",
+  async function handleInitiateRazorpayPayment() {
+    const response = await axios.post("http://localhost:5000/api/shop/order/create", {
+      userId: user.id,
+      cartId: cartItems._id,
+      cartItems,
       totalAmount: totalCartAmount,
-      orderDate: new Date(),
-      orderUpdateDate: new Date(),
-      paymentId: "",
-      payerId: "",
+      addressInfo: currentSelectedAddress,
+      orderStatus: "pending",
+    });
+
+    const { razorpayOrderId, orderId } = response.data;
+
+    const options = {
+      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+      amount: totalCartAmount * 100,
+      currency: "INR",
+      name: "Nature Spicy",
+      description: "Order Payment",
+      order_id: razorpayOrderId,
+      handler: async (response) => {
+        const captureRes = await axios.post("http://localhost:5000/api/shop/order/capture", {
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_signature: response.razorpay_signature,
+          orderId,
+        });
+
+        if (captureRes.data.success) {
+          window.location.href = "/shop/payment-success";
+        }
+      },
+      prefill: {
+        name: user.name,
+        email: user.email,
+      },
     };
 
-    dispatch(createNewOrder(orderData)).then((data) => {
-      
-      if (data?.payload?.success) {
-        setIsPaymentStart(true);
-      } else {
-        setIsPaymentStart(false);
-      }
-    });
-  }
-
-  if (approvalURL) {
-    window.location.href = approvalURL;
+    const rzp = new window.Razorpay(options);
+    rzp.open();
   }
 
   return (
@@ -118,10 +104,10 @@ function ShoppingCheckout() {
             </div>
           </div>
           <div className="mt-4 w-full">
-            <Button onClick={handleInitiatePaypalPayment} className="w-full">
+            <Button onClick={handleInitiateRazorpayPayment} className="w-full">
               {isPaymentStart
-                ? "Processing Paypal Payment..."
-                : "Checkout with Paypal"}
+                ? "Processing Razorpay Payment..."
+                : "Checkout with Razorpay"}
             </Button>
           </div>
         </div>

@@ -1,7 +1,8 @@
-const paypal = require("../../helpers/paypal");
+const razorpay = require("../../helpers/razorpay");
 const Order = require("../../models/Order");
 const Cart = require("../../models/Cart");
 const Product = require("../../models/Product");
+
 
 const createOrder = async (req, res) => {
   try {
@@ -9,140 +10,92 @@ const createOrder = async (req, res) => {
       userId,
       cartItems,
       addressInfo,
-      orderStatus,
-      paymentMethod,
-      paymentStatus,
       totalAmount,
-      orderDate,
-      orderUpdateDate,
-      paymentId,
-      payerId,
+      orderStatus,
       cartId,
     } = req.body;
 
-    const create_payment_json = {
-      intent: "sale",
-      payer: {
-        payment_method: "paypal",
-      },
-      redirect_urls: {
-        return_url: `${process.env.CLIENT_BASE_URL}/shop/paypal-return`,
-        cancel_url: `${process.env.CLIENT_BASE_URL}/shop/paypal-cancel`,
-      },
-      transactions: [
-        {
-          item_list: {
-            items: cartItems.map((item) => ({
-              name: item.title,
-              sku: item.productId,
-              price: item.price.toFixed(2),
-              currency: "USD",
-              quantity: item.quantity,
-            })),
-          },
-          amount: {
-            currency: "USD",
-            total: totalAmount.toFixed(2),
-          },
-          description: "description",
-        },
-      ],
+    const options = {
+      amount: totalAmount * 100, // Convert to smallest currency unit
+      currency: "INR",
+      receipt: `receipt_${cartId}`,
     };
 
-    paypal.payment.create(create_payment_json, async (error, paymentInfo) => {
-      if (error) {
-        console.log(error);
+    const order = await razorpay.orders.create(options);
 
-        return res.status(500).json({
-          success: false,
-          message: "Error while creating paypal payment",
-        });
-      } else {
-        const newlyCreatedOrder = new Order({
-          userId,
-          cartId,
-          cartItems,
-          addressInfo,
-          orderStatus,
-          paymentMethod,
-          paymentStatus,
-          totalAmount,
-          orderDate,
-          orderUpdateDate,
-          paymentId,
-          payerId,
-        });
-
-        await newlyCreatedOrder.save();
-
-        const approvalURL = paymentInfo.links.find(
-          (link) => link.rel === "approval_url"
-        ).href;
-
-        res.status(201).json({
-          success: true,
-          approvalURL,
-          orderId: newlyCreatedOrder._id,
-        });
-      }
+    const newOrder = new Order({
+      userId,
+      cartId,
+      cartItems,
+      addressInfo,
+      orderStatus,
+      paymentMethod: "razorpay",
+      paymentStatus: "pending",
+      totalAmount,
+      paymentId: order.id,
     });
-  } catch (e) {
-    console.log(e);
+
+    await newOrder.save();
+
+    res.status(201).json({
+      success: true,
+      orderId: newOrder._id,
+      razorpayOrderId: order.id,
+    });
+  } catch (error) {
+    console.error("Error while creating Razorpay order:", error);
     res.status(500).json({
       success: false,
-      message: "Some error occured!",
+      message: "Error occurred during Razorpay order creation",
     });
   }
 };
 
+
 const capturePayment = async (req, res) => {
   try {
-    const { paymentId, payerId, orderId } = req.body;
+    const { razorpay_payment_id, razorpay_order_id, razorpay_signature, orderId } = req.body;
 
-    let order = await Order.findById(orderId);
-
+    const order = await Order.findById(orderId);
     if (!order) {
       return res.status(404).json({
         success: false,
-        message: "Order can not be found",
+        message: "Order not found",
+      });
+    }
+
+    const razorpayOptions = {
+      payment_id: razorpay_payment_id,
+      order_id: razorpay_order_id,
+      signature: razorpay_signature,
+    };
+
+    const crypto = require("crypto");
+    const hmac = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET);
+    hmac.update(`${razorpay_order_id}|${razorpay_payment_id}`);
+    const digest = hmac.digest("hex");
+
+    if (digest !== razorpay_signature) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid payment signature",
       });
     }
 
     order.paymentStatus = "paid";
     order.orderStatus = "confirmed";
-    order.paymentId = paymentId;
-    order.payerId = payerId;
-
-    for (let item of order.cartItems) {
-      let product = await Product.findById(item.productId);
-
-      if (!product) {
-        return res.status(404).json({
-          success: false,
-          message: `Not enough stock for this product ${product.title}`,
-        });
-      }
-
-      product.totalStock -= item.quantity;
-
-      await product.save();
-    }
-
-    const getCartId = order.cartId;
-    await Cart.findByIdAndDelete(getCartId);
-
+    order.paymentId = razorpay_payment_id;
     await order.save();
 
     res.status(200).json({
       success: true,
-      message: "Order confirmed",
-      data: order,
+      message: "Payment successful and order confirmed",
     });
-  } catch (e) {
-    console.log(e);
+  } catch (error) {
+    console.error("Error capturing Razorpay payment:", error);
     res.status(500).json({
       success: false,
-      message: "Some error occured!",
+      message: "Error capturing payment",
     });
   }
 };

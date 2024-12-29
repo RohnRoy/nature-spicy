@@ -32,8 +32,6 @@ function AdminOrdersView() {
     dispatch(getAllOrdersForAdmin());
   }, [dispatch]);
 
-  console.log(orderDetails, "orderList");
-
   useEffect(() => {
     if (orderDetails !== null) setOpenDetailsDialog(true);
   }, [orderDetails]);
@@ -59,9 +57,9 @@ function AdminOrdersView() {
           <TableBody>
             {orderList && orderList.length > 0
               ? orderList.map((orderItem) => (
-                  <TableRow>
+                  <TableRow key={orderItem?._id}>
                     <TableCell>{orderItem?._id}</TableCell>
-                    <TableCell>{orderItem?.orderDate.split("T")[0]}</TableCell>
+                    <TableCell>{orderItem?.orderDate ? new Date(orderItem.orderDate).toLocaleDateString() : "N/A"}</TableCell>
                     <TableCell>
                       <Badge
                         className={`py-1 px-3 ${
@@ -91,7 +89,9 @@ function AdminOrdersView() {
                         >
                           View Details
                         </Button>
-                        <AdminOrderDetailsView orderDetails={orderDetails} />
+                        {orderDetails && (
+                          <AdminOrderDetailsView orderDetails={orderDetails} />
+                        )}
                       </Dialog>
                     </TableCell>
                   </TableRow>

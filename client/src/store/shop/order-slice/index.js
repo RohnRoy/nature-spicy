@@ -107,6 +107,9 @@ const shoppingOrderSlice = createSlice({
       .addCase(getOrderDetails.rejected, (state) => {
         state.isLoading = false;
         state.orderDetails = null;
+      })
+      .addCase(capturePayment.fulfilled, (state, action) => {
+        state.orderDetails = action.payload.data;
       });
   },
 });

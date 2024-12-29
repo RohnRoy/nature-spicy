@@ -17,7 +17,7 @@ function ShoppingOrderDetailsView({ orderDetails }) {
           </div>
           <div className="flex mt-2 items-center justify-between">
             <p className="font-medium">Order Date</p>
-            <Label>{orderDetails?.orderDate.split("T")[0]}</Label>
+            <Label>{orderDetails?.orderDate ? new Date(orderDetails.orderDate).toLocaleDateString() : "N/A"}</Label>
           </div>
           <div className="flex mt-2 items-center justify-between">
             <p className="font-medium">Order Price</p>
@@ -55,9 +55,9 @@ function ShoppingOrderDetailsView({ orderDetails }) {
             <ul className="grid gap-3">
               {orderDetails?.cartItems && orderDetails?.cartItems.length > 0
                 ? orderDetails?.cartItems.map((item) => (
-                    <li className="flex items-center justify-between">
+                    <li className="flex items-center justify-between" key={item.productId}>
                       <span>Title: {item.title}</span>
-                      <span>Quantity: {item.quantity} kg</span>
+                      <span>Quantity: {item.quantity}</span>
                       <span>Price: ₹ {item.price}</span>
                     </li>
                   ))
