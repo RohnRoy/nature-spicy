@@ -129,7 +129,7 @@ function ShoppingListing() {
         image,
       })
     ).then((data) => {
-      if (data?.payload?.success) {
+      if (data?.payload?.success || !user) { // Added !user condition
         dispatch(fetchCartItems(user?.id));
         toast({
           title: "Product is added to cart",
