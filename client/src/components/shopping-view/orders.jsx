@@ -76,7 +76,7 @@ function ShoppingOrders() {
           handler: async (response) => {
             try {
               const captureRes = await axios.post(
-                "http://localhost:5000/api/shop/order/capture",
+                `${process.env.VITE_API_URL}/api/shop/order/capture`,
                 {
                   razorpay_payment_id: response.razorpay_payment_id,
                   razorpay_order_id: response.razorpay_order_id,
