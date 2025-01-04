@@ -48,6 +48,11 @@ export function Footer() {
                   Contact
                 </button>
               </li>
+              <li>
+                <button onClick={() => navigate("/privacy-policy")} className="hover:text-white">
+                  Privacy Policy
+                </button>
+              </li>
             </ul>
           </div>
 
