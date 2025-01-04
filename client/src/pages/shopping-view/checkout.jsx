@@ -8,6 +8,7 @@ import { createNewOrder } from "@/store/shop/order-slice";
 import { Navigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import axios from "axios";
+import { Footer } from "@/components/layout/Footer";
 
 function ShoppingCheckout() {
   const { cartItems } = useSelector((state) => state.shopCart);
@@ -88,11 +89,11 @@ function ShoppingCheckout() {
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col min-h-screen">
       <div className="relative h-[300px] w-full overflow-hidden">
         <img src={img} className="h-full w-full object-cover object-center" />
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5 p-5">
+      <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5 p-5 mb-8">
         <Address
           selectedId={currentSelectedAddress}
           setCurrentSelectedAddress={setCurrentSelectedAddress}
@@ -118,9 +119,8 @@ function ShoppingCheckout() {
           </div>
         </div>
       </div>
-      
+      <Footer />
     </div>
-    
   );
 }
 

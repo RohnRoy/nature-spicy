@@ -57,7 +57,7 @@ function ShoppingOrderDetailsView({ orderDetails }) {
                 ? orderDetails?.cartItems.map((item) => (
                     <li className="flex items-center justify-between" key={item.productId}>
                       <span>Title: {item.title}</span>
-                      <span>Quantity: {item.quantity}</span>
+                      <span>Quantity: {item.quantity} kg</span>
                       <span>Price: ₹ {item.price}</span>
                     </li>
                   ))

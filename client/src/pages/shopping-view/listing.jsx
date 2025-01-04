@@ -29,6 +29,7 @@ import {
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
+import { Footer } from "@/components/layout/Footer";  // Add this import
 
 function createSearchParamsHelper(filterParams) {
   const queryParams = [];
@@ -219,108 +220,7 @@ function ShoppingListing() {
           productDetails={productDetails}
         />
       </div>
-
-      {/* Footer Section */}
-      <footer className="bg-gray-800 text-white py-8">
-        <div className="container mx-auto flex flex-col md:flex-row justify-between items-start">
-          {/* Logo Section */}
-          <div className="flex flex-col items-start mb-6 md:mb-0">
-            <div className="flex items-center">
-              <img src={logo} alt="Logo" className="h-20 w-auto mr-2" />
-            </div>
-          </div>
-
-          {/* Navigation Links */}
-          <div className="mb-6 md:mb-0">
-            <nav className="space-y-2">
-              <Label
-                onClick={() => navigate("/shop/home")}
-                className="block cursor-pointer hover:text-gray-300"
-              >
-                Home
-              </Label>
-              <Label
-                onClick={() => navigate("/shop/listing")}
-                className="block cursor-pointer hover:text-gray-300"
-              >
-                Products
-              </Label>
-              <Label
-                onClick={() => navigate("/about")}
-                className="block cursor-pointer hover:text-gray-300"
-              >
-                About Us
-              </Label>
-              <Label
-                onClick={() => navigate("/contact")}
-                className="block cursor-pointer hover:text-gray-300"
-              >
-                Contact
-              </Label>
-              <Label
-                onClick={() => navigate("/faq")}
-                className="block cursor-pointer hover:text-gray-300"
-              >
-                FAQ
-              </Label>
-            </nav>
-          </div>
-
-          {/* Contact and Social Media */}
-          <div className="flex flex-col items-start md:items-end">
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <Mail className="h-5 w-5" />
-                <span>info@naturespicy.com</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Phone className="h-5 w-5" />
-                <span>+91 9876543210</span>
-              </div>
-            </div>
-
-            <div className="flex space-x-4 mt-4">
-              <Button
-                as="a"
-                href="https://facebook.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                variant="ghost"
-                size="icon"
-                className="hover:text-gray-300"
-              >
-                <Facebook className="h-6 w-6" />
-              </Button>
-              <Button
-                as="a"
-                href="https://twitter.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                variant="ghost"
-                size="icon"
-                className="hover:text-gray-300"
-              >
-                <Twitter className="h-6 w-6" />
-              </Button>
-              <Button
-                as="a"
-                href="https://instagram.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                variant="ghost"
-                size="icon"
-                className="hover:text-gray-300"
-              >
-                <Instagram className="h-6 w-6" />
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        <div className="text-center mt-6 text-sm">
-          © 2024 Nature Spicy. All rights reserved.
-        </div>
-      </footer>
+      <Footer /> {/* Add the Footer component here */}
     </div>
   );
 }

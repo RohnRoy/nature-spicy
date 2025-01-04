@@ -2,17 +2,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import accImg from "../../assets/carousel-4.png";
 import Address from "@/components/shopping-view/address";
 import ShoppingOrders from "@/components/shopping-view/orders";
+import { Footer } from "@/components/layout/Footer";
 
 function ShoppingAccount() {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col min-h-screen">
       <div className="relative h-[300px] w-full overflow-hidden">
         <img
           src={accImg}
           className="h-full w-full object-cover object-center"
         />
       </div>
-      <div className="container mx-auto grid grid-cols-1 gap-8 py-8">
+      <div className="flex-1 container mx-auto grid grid-cols-1 gap-8 py-8 mb-8">
         <div className="flex flex-col rounded-lg border bg-background p-6 shadow-sm">
           <Tabs defaultValue="orders">
             <TabsList>
@@ -28,6 +29,7 @@ function ShoppingAccount() {
           </Tabs>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

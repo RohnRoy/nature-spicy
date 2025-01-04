@@ -207,6 +207,6 @@ export const addressFormControls = [
     label: "Notes",
     name: "notes",
     componentType: "textarea",
-    placeholder: "Enter any additional notes",
+    placeholder: "Enter any additional notes for delivery",
   },
 ];

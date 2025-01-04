@@ -35,8 +35,8 @@ const createOrder = async (req, res) => {
       cartItems: flattenedCartItems,
       addressInfo,
       orderStatus,
-      paymentMethod: "razorpay",
-      paymentStatus: "pending",
+      paymentMethod: "Razorpay",
+      paymentStatus: "Pending",
       totalAmount,
       paymentId: order.id,
     });
@@ -92,8 +92,8 @@ const capturePayment = async (req, res) => {
       });
     }
 
-    order.paymentStatus = "paid";
-    order.orderStatus = "confirmed";
+    order.paymentStatus = "Paid";
+    order.orderStatus = "Confirmed";
     order.paymentId = razorpay_payment_id;
     await order.save();
     // remove the items from the cart after successful payment
@@ -173,9 +173,91 @@ const getOrderDetails = async (req, res) => {
   }
 };
 
+const cancelOrder = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    // Only allow cancellation if order is in pending state
+    if (order.orderStatus !== "pending") {
+      return res.status(400).json({
+        success: false,
+        message: "Cannot cancel order at this stage",
+      });
+    }
+
+    order.orderStatus = "cancelled";
+    order.orderUpdateDate = new Date();
+    await order.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Order cancelled successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Error while cancelling order",
+    });
+  }
+};
+
+const createPaymentForPendingOrder = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    if (order.orderStatus !== "pending") {
+      return res.status(400).json({
+        success: false,
+        message: "Payment can only be made for pending orders",
+      });
+    }
+
+    const options = {
+      amount: order.totalAmount * 100,
+      currency: "INR",
+      receipt: `receipt_${order._id}`,
+    };
+
+    const razorpayOrder = await razorpay.orders.create(options);
+    order.paymentId = razorpayOrder.id;
+    await order.save();
+
+    res.status(200).json({
+      success: true,
+      orderId: order._id,
+      razorpayOrderId: razorpayOrder.id,
+    });
+  } catch (error) {
+    console.error("Error creating payment for pending order:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error occurred during payment creation",
+    });
+  }
+};
+
 module.exports = {
   createOrder,
   capturePayment,
   getAllOrdersByUser,
   getOrderDetails,
+  cancelOrder,
+  createPaymentForPendingOrder,
 };

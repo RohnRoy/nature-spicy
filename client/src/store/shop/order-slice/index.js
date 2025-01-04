@@ -59,6 +59,26 @@ export const getOrderDetails = createAsyncThunk(
   }
 );
 
+export const cancelOrder = createAsyncThunk(
+  "/order/cancel",
+  async (orderId) => {
+    const response = await axios.put(
+      `http://localhost:5000/api/shop/order/cancel/${orderId}`
+    );
+    return response.data;
+  }
+);
+
+export const createPaymentForPendingOrder = createAsyncThunk(
+  "/order/createPaymentForPending",
+  async (orderId) => {
+    const response = await axios.post(
+      `http://localhost:5000/api/shop/order/create-payment/${orderId}`
+    );
+    return response.data;
+  }
+);
+
 const shoppingOrderSlice = createSlice({
   name: "shoppingOrderSlice",
   initialState,
@@ -110,6 +130,21 @@ const shoppingOrderSlice = createSlice({
       })
       .addCase(capturePayment.fulfilled, (state, action) => {
         state.orderDetails = action.payload.data;
+      })
+      .addCase(cancelOrder.fulfilled, (state, action) => {
+        state.isLoading = false;
+      })
+      .addCase(cancelOrder.rejected, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(createPaymentForPendingOrder.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(createPaymentForPendingOrder.fulfilled, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(createPaymentForPendingOrder.rejected, (state) => {
+        state.isLoading = false;
       });
   },
 });
