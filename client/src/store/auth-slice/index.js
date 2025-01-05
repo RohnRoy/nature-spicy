@@ -13,7 +13,7 @@ export const registerUser = createAsyncThunk(
 
   async (formData) => {
     const response = await axios.post(
-      `${process.env.VITE_API_URL}/api/auth/register`,
+      `${import.meta.env.VITE_API_URL}/api/auth/register`,
       formData,
       {
         withCredentials: true,
@@ -34,7 +34,7 @@ export const loginUser = createAsyncThunk(
       formData.cartItems = cartItems;
     }
     const response = await axios.post(
-      `${process.env.VITE_API_URL}/api/auth/login`,
+      `${import.meta.env.VITE_API_URL}/api/auth/login`,
       formData,
       {
         withCredentials: true,
@@ -50,7 +50,7 @@ export const logoutUser = createAsyncThunk(
 
   async () => {
     const response = await axios.post(
-      `${process.env.VITE_API_URL}/api/auth/logout`,
+      `${import.meta.env.VITE_API_URL}/api/auth/logout`,
       {},
       {
         withCredentials: true,
@@ -66,7 +66,7 @@ export const logoutUser = createAsyncThunk(
 
 //   async () => {
 //     const response = await axios.get(
-//       `${process.env.VITE_API_URL}/api/auth/check-auth`,
+//       `${import.meta.env.VITE_API_URL}/api/auth/check-auth`,
 //       {
 //         withCredentials: true,
 //         headers: {
@@ -85,7 +85,7 @@ export const checkAuth = createAsyncThunk(
 
   async (token) => {
     const response = await axios.get(
-      `${process.env.VITE_API_URL}/api/auth/check-auth`,
+      `${import.meta.env.VITE_API_URL}/api/auth/check-auth`,
       {
         
         headers: {

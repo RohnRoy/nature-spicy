@@ -41,7 +41,7 @@ export const addToCart = createAsyncThunk(
       return { data: cartData };
     } else {
       const response = await axios.post(
-        `${process.env.VITE_API_URL}/api/shop/cart/add`,
+        `${import.meta.env.VITE_API_URL}/api/shop/cart/add`,
         {
           userId,
           productId,
@@ -65,7 +65,7 @@ export const fetchCartItems = createAsyncThunk(
       return cartData;
     } else {
       const response = await axios.get(
-        `${process.env.VITE_API_URL}/api/shop/cart/get/${userId}`
+        `${import.meta.env.VITE_API_URL}/api/shop/cart/get/${userId}`
       );
       return response.data;
     }
@@ -85,7 +85,7 @@ export const deleteCartItem = createAsyncThunk(
       return { data: cartData };
     } else {
       const response = await axios.delete(
-        `${process.env.VITE_API_URL}/api/shop/cart/${userId}/${productId}`
+        `${import.meta.env.VITE_API_URL}/api/shop/cart/${userId}/${productId}`
       );
       return response.data;
     }
@@ -110,7 +110,7 @@ export const updateCartQuantity = createAsyncThunk(
       return { data: cartData };
     } else {
       const response = await axios.put(
-        `${process.env.VITE_API_URL}/api/shop/cart/update-cart`,
+        `${import.meta.env.VITE_API_URL}/api/shop/cart/update-cart`,
         {
           userId,
           productId,
