@@ -56,7 +56,8 @@ export const logoutUser = createAsyncThunk(
         withCredentials: true,
       }
     );
-
+    // Clear session storage
+    sessionStorage.removeItem('token');
     return response.data;
   }
 );
@@ -161,6 +162,15 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.user = null;
         state.isAuthenticated = false;
+        state.token = null; // Clear the token from state
+      })
+      .addCase(logoutUser.rejected, (state, action) => {
+        // Also handle rejection to ensure cleanup
+        state.isLoading = false;
+        state.user = null;
+        state.isAuthenticated = false;
+        state.token = null;
+        sessionStorage.removeItem('token');
       });
   },
 });

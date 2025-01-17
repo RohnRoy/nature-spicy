@@ -1,11 +1,13 @@
 import React from "react";
 import { Footer } from "@/components/layout/Footer"; // Ensure this path is accurate in your project structure
+import ShoppingHeader from "@/components/shopping-view/header";
 
 function PrivacyPolicy() {
   const currentDate = new Date().toLocaleDateString();
 
   return (
     <>
+    <ShoppingHeader />
       <div className="container mx-auto px-6 py-12">
         <h1 className="text-3xl font-bold mb-6">Privacy Policy</h1>
         <p className="text-sm mb-6">Last updated: {currentDate}</p>
