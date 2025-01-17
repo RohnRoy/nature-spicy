@@ -1,5 +1,5 @@
 import React from "react";
-import { Footer } from "@/components/layout/footer"; // Updated import path
+import { Footer } from "@/components/layout/Footer"; // Updated import path
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import ShoppingHeader from "../shopping-view/header";
