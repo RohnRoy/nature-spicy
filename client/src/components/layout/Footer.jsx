@@ -8,7 +8,7 @@ import {
   MapPin,
   Phone,
 } from "lucide-react";
-import ContactForm from "@/components/common/contactForm"; // Import ContactForm
+
 
 export function Footer() {
   const navigate = useNavigate();
