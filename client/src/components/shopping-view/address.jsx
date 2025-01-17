@@ -22,14 +22,29 @@ const initialAddressFormData = {
 
 function Address({ setCurrentSelectedAddress, selectedId }) {
   const [formData, setFormData] = useState(initialAddressFormData);
+  const [errors, setErrors] = useState({});
   const [currentEditedId, setCurrentEditedId] = useState(null);
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { addressList } = useSelector((state) => state.shopAddress);
   const { toast } = useToast();
 
+  function validateForm() {
+    const newErrors = {};
+    if (!formData.address.trim()) newErrors.address = "Address is required";
+    if (!formData.city.trim()) newErrors.city = "City is required";
+    if (!formData.phone.trim()) newErrors.phone = "Phone is required";
+    if (!formData.pincode.trim()) newErrors.pincode = "Pincode is required";
+    return newErrors;
+  }
+
   function handleManageAddress(event) {
     event.preventDefault();
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
 
     if (addressList.length >= 3 && currentEditedId === null) {
       setFormData(initialAddressFormData);
@@ -109,8 +124,6 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
     dispatch(fetchAllAddresses(user?.id));
   }, [dispatch]);
 
-  console.log(addressList, "addressList");
-
   return (
     <Card>
       <div className="mb-5 p-3 grid grid-cols-1 sm:grid-cols-2  gap-2">
@@ -133,7 +146,10 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
       </CardHeader>
       <CardContent className="space-y-3">
         <CommonForm
-          formControls={addressFormControls}
+          formControls={addressFormControls.map((control) => ({
+            ...control,
+            error: errors[control.name],
+          }))}
           formData={formData}
           setFormData={setFormData}
           buttonText={currentEditedId !== null ? "Edit" : "Add"}

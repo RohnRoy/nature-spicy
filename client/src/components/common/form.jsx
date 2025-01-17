@@ -105,7 +105,14 @@ function CommonForm({
         break;
     }
 
-    return element;
+    return (
+      <div>
+        {element}
+        {getControlItem.error && (
+          <p className="text-red-500 text-sm mt-1">{getControlItem.error}</p>
+        )}
+      </div>
+    );
   }
 
   return (

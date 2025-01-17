@@ -14,12 +14,26 @@ const initialState = {
 
 function AuthRegister() {
   const [formData, setFormData] = useState(initialState);
+  const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  function validateForm() {
+    const newErrors = {};
+    if (!formData.userName.trim()) newErrors.userName = "User Name is required";
+    if (!formData.email.trim()) newErrors.email = "Email is required";
+    if (!formData.password.trim()) newErrors.password = "Password is required";
+    return newErrors;
+  }
+
   function onSubmit(event) {
     event.preventDefault();
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
     dispatch(registerUser(formData)).then((data) => {
       if (data?.payload?.success) {
         toast({
@@ -34,8 +48,6 @@ function AuthRegister() {
       }
     });
   }
-
-  console.log(formData);
 
   return (
     <div className="mx-auto w-full max-w-md space-y-6">
@@ -54,7 +66,10 @@ function AuthRegister() {
         </p>
       </div>
       <CommonForm
-        formControls={registerFormControls}
+        formControls={registerFormControls.map((control) => ({
+          ...control,
+          error: errors[control.name],
+        }))}
         buttonText={"Sign Up"}
         formData={formData}
         setFormData={setFormData}

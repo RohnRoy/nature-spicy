@@ -24,6 +24,7 @@ import PaymentSuccessPage from "./pages/shopping-view/payment-success";
 import SearchProducts from "./pages/shopping-view/search";
 import ShoppingHeader from "./components/shopping-view/header";
 import PrivacyPolicy from "./pages/privacy-policy";
+import ContactForm from "./components/common/contactForm";
 
 function App() {
   const { user, isAuthenticated, isLoading } = useSelector(
@@ -128,6 +129,7 @@ function App() {
           <Route path="search" element={<SearchProducts />} />
         </Route>
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/contactForm" element={<ContactForm />} />
         <Route path="/unauth-page" element={<UnauthPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

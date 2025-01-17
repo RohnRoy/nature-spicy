@@ -13,12 +13,24 @@ const initialState = {
 
 function AuthLogin() {
   const [formData, setFormData] = useState(initialState);
+  const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
   const { toast } = useToast();
 
+  function validateForm() {
+    const newErrors = {};
+    if (!formData.email.trim()) newErrors.email = "Email is required";
+    if (!formData.password.trim()) newErrors.password = "Password is required";
+    return newErrors;
+  }
+
   function onSubmit(event) {
     event.preventDefault();
-
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
     dispatch(loginUser(formData)).then((data) => {
       if (data?.payload?.success) {
         toast({
@@ -50,7 +62,10 @@ function AuthLogin() {
         </p>
       </div>
       <CommonForm
-        formControls={loginFormControls}
+        formControls={loginFormControls.map((control) => ({
+          ...control,
+          error: errors[control.name],
+        }))}
         buttonText={"Sign In"}
         formData={formData}
         setFormData={setFormData}

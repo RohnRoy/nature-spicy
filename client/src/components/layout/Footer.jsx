@@ -8,6 +8,7 @@ import {
   MapPin,
   Phone,
 } from "lucide-react";
+import ContactForm from "@/components/common/contactForm"; // Import ContactForm
 
 export function Footer() {
   const navigate = useNavigate();
@@ -44,7 +45,7 @@ export function Footer() {
                 </button>
               </li>
               <li>
-                <button onClick={() => navigate("/contact")} className="hover:text-white">
+                <button onClick={() => navigate("/contactForm")} className="hover:text-white">
                   Contact
                 </button>
               </li>
