@@ -29,7 +29,7 @@ function AdminHeader({ setOpen }) {
         <span className="sr-only">Toggle sidebar</span>
       </Button>
       <div className="flex-1" />
-      <Button variant="ghost" onClick={handleLogout}>
+      <Button variant="default" onClick={handleLogout}>
         Logout
       </Button>
     </header>
