@@ -37,12 +37,21 @@ function ContactPage() {
         <div className="flex flex-1 flex-col md:flex-row container mx-auto p-6">
           <div className="w-full md:w-1/2 mb-6 md:mb-0">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.019284635008!2d144.9630579153169!3d-37.81410797975195!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad642af0f11fd81%3A0xf577d8b1e1e9e0e!2sFederation%20Square!5e0!3m2!1sen!2sau!4v1633078871234!5m2!1sen!2sau"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3928.078204744492!2d76.99241111474375!3d9.833700479928034!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b078f2e51a46f65%3A0x0!2zOeKcqDMwJzAxLjMiTiA3NsKwNTknNDMuMCJF!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
               width="100%"
               height="450"
+              style={{ border: 0 }}
               allowFullScreen=""
               loading="lazy"
             ></iframe>
+            <a
+              href="https://www.google.com/maps/dir/?api=1&destination=9.8337,76.9946"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block mt-2 text-blue-500 underline text-center"
+            >
+              Open in Google Maps for Directions
+            </a>
           </div>
           <div className="w-full md:w-1/2 p-6">
             <h2 className="text-2xl font-bold mb-4">Contact Us</h2>

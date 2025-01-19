@@ -1,7 +1,7 @@
 import React from "react";
 import { Footer } from "@/components/layout/Footer";
 import ShoppingHeader from "../shopping-view/header";
-import spices from "../../assets/spices.jpg";
+
 import image2 from "../../assets/2.jpeg";
 import pepp from "../../assets/pepp.jpg";
 
