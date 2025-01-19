@@ -131,7 +131,7 @@ function App() {
         </Route>
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/contactForm" element={<ContactForm />} />
-        <Route path="/aboutPage" element={<AboutPage />} />
+        <Route path="/AboutPage" element={<AboutPage />} />
         <Route path="/unauth-page" element={<UnauthPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
