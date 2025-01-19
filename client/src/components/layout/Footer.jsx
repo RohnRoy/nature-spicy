@@ -40,7 +40,7 @@ export function Footer() {
                 </button>
               </li>
               <li>
-                <button onClick={() => navigate("/about")} className="hover:text-white">
+                <button onClick={() => navigate("/aboutPage")} className="hover:text-white">
                   About Us
                 </button>
               </li>
